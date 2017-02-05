@@ -83,6 +83,34 @@ class ImgFigure extends React.Component {
   }
 }
 
+//控制组件
+class ControllerUnit extends React.Component {
+  handleClick(e){
+    if(this.props.arrange.isCenter){
+      this.props.inverse();
+    }else{
+      this.props.center();
+    }
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  render(){
+    var controllerUnitClassName = 'controller-unit';
+    if(this.props.arrange.isCenter){
+      controllerUnitClassName += ' is-center';
+
+      if(this.props.arrange.isInverse){
+        controllerUnitClassName += ' is-inverse';
+      }
+    }
+
+    return (
+      <span className={controllerUnitClassName} onClick={this.handleClick.bind(this)}></span>
+    )
+  }
+}
+
 class GalleryByReactApp extends React.Component {
     constructor(props){
       super(props);
@@ -95,7 +123,7 @@ class GalleryByReactApp extends React.Component {
           //     right: 0
           //   },
           //   rotate: 0,
-          //   isInverse: false,  
+          //   isInverse: false,
           //   isCenter: false
           // },
         ]
@@ -118,7 +146,7 @@ class GalleryByReactApp extends React.Component {
       }
     }
 
-    /* 
+    /*
      * 反转图片
      * @param index 输入当前被执行inverse操作的图片对应的index值
      * @return {Function} 这是一个闭包函数，其内return一个真正待被执行的函数
@@ -193,6 +221,8 @@ class GalleryByReactApp extends React.Component {
             }
         }
 
+
+
         //把图片放回
         if(imgsArrangeTopArr && imgsArrangeTopArr[0]) {
             imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
@@ -263,13 +293,14 @@ class GalleryByReactApp extends React.Component {
                     isCenter: false
                 }
             }
-            imgFigures.push(<ImgFigure data={value} ref={'imgFigure' + index} arrange={this.state.imgsArrangeArr[index]} center={this.center(index)} inverse={this.inverse(index)}/>)
+            imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure' + index} arrange={this.state.imgsArrangeArr[index]} center={this.center(index)} inverse={this.inverse(index)}/>)
+            controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} center={this.center(index)} inverse={this.inverse(index)}/>)
         }.bind(this));
 
         return (
             <section className="stage" ref="stage">
                 <section className="img-sec">{imgFigures}</section>
-                <nav className="controller-nav"></nav>
+                <nav className="controller-nav">{controllerUnits}</nav>
             </section>
         )
     }
